@@ -1,0 +1,26 @@
+name: Sync Aider Fork
+
+on:
+  schedule:
+    # Runs at 02:00 UTC daily (adjust time as needed)
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Sync fork
+        run: |
+          git remote add upstream git@github.com:paul-gauthier/aider.git
+          git fetch upstream
+          git checkout main
+          git merge upstream/main
+          git push origin main
